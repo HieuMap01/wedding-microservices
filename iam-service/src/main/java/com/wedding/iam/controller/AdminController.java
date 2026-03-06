@@ -1,0 +1,60 @@
+package com.wedding.iam.controller;
+
+import com.wedding.common.dto.ApiResponse;
+import com.wedding.common.exception.UnauthorizedException;
+import com.wedding.iam.dto.UserResponse;
+import com.wedding.iam.service.AuthService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
+
+@RestController
+@RequestMapping("/api/iam/admin")
+@RequiredArgsConstructor
+public class AdminController {
+
+    private final AuthService authService;
+
+    @GetMapping("/users")
+    public ResponseEntity<ApiResponse<List<UserResponse>>> getAllCouples(
+            @RequestHeader("X-User-Role") String role) {
+        validateAdmin(role);
+        List<UserResponse> response = authService.getAllCouples();
+        return ResponseEntity.ok(ApiResponse.ok(response));
+    }
+
+    @GetMapping("/users/{id}")
+    public ResponseEntity<ApiResponse<UserResponse>> getUserById(
+            @RequestHeader("X-User-Role") String role,
+            @PathVariable Long id) {
+        validateAdmin(role);
+        UserResponse response = authService.getUserById(id);
+        return ResponseEntity.ok(ApiResponse.ok(response));
+    }
+
+    @GetMapping("/stats")
+    public ResponseEntity<ApiResponse<Map<String, Object>>> getStats(
+            @RequestHeader("X-User-Role") String role) {
+        validateAdmin(role);
+        Map<String, Object> stats = authService.getAdminStats();
+        return ResponseEntity.ok(ApiResponse.ok(stats));
+    }
+
+    @PutMapping("/users/{id}/deactivate")
+    public ResponseEntity<ApiResponse<Void>> deactivateUser(
+            @RequestHeader("X-User-Role") String role,
+            @PathVariable Long id) {
+        validateAdmin(role);
+        authService.deactivateUser(id);
+        return ResponseEntity.ok(ApiResponse.ok(null));
+    }
+
+    private void validateAdmin(String role) {
+        if (!"SUPER_ADMIN".equals(role)) {
+            throw new UnauthorizedException("Access denied. Admin role required.");
+        }
+    }
+}

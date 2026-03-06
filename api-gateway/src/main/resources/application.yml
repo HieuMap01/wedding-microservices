@@ -1,0 +1,36 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  main:
+    web-application-type: reactive
+  cloud:
+    gateway:
+      routes:
+        # IAM Service
+        - id: iam-service
+          uri: lb://iam-service
+          predicates:
+            - Path=/api/iam/**
+
+        # Wedding Core Service
+        - id: wedding-core-service
+          uri: lb://wedding-core-service
+          predicates:
+            - Path=/api/weddings/**
+
+        # Interaction & Analytics Service
+        - id: interaction-service
+          uri: lb://interaction-service
+          predicates:
+            - Path=/api/interactions/**
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+jwt:
+  secret: WeddingSaaSSecretKeyForJWTTokenGeneration2024VeryLongAndSecure

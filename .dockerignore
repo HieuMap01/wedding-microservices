@@ -1,0 +1,15 @@
+target/
+.mvn/
+.idea/
+*.iml
+*.class
+*.jar
+*.war
+node_modules/
+.next/
+.git/
+.gitignore
+*.md
+docker-compose.yml
+Dockerfile
+uploads/
