@@ -154,10 +154,10 @@ public class AuthService {
         return stats;
     }
 
-    public void deactivateUser(Long id) {
+    public void updateUserStatus(Long id, boolean isActive) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-        user.setIsActive(false);
+        user.setIsActive(isActive);
         userRepository.save(user);
     }
 

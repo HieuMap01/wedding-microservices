@@ -108,7 +108,7 @@ export const adminApi = {
   getStats: () => api.get<{ totalCouples: number; totalUsers: number }>('/api/iam/admin/stats'),
   getCouples: (page: number = 0, size: number = 10) => api.get<PageResponse<UserResponse>>(`/api/iam/admin/users?page=${page}&size=${size}`),
   getCoupleById: (id: number) => api.get<UserResponse>(`/api/iam/admin/users/${id}`),
-  deactivateCouple: (id: number) => api.put<void>(`/api/iam/admin/users/${id}/deactivate`),
+  updateCoupleStatus: (id: number, isActive: boolean) => api.put<void>(`/api/iam/admin/users/${id}/status?isActive=${isActive}`),
   getAllWeddings: () => api.get<WeddingResponse[]>('/api/weddings/admin/list'),
   getWeddingById: (id: number) => api.get<WeddingResponse>(`/api/weddings/admin/${id}`),
   getWeddingStats: (weddingId: number) => api.get<StatsResponse>(`/api/interactions/admin/${weddingId}/stats`),

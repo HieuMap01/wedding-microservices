@@ -91,7 +91,7 @@ export default function CouplesListPage() {
                                                     try {
                                                         const newStatus = !w.isActive;
                                                         // Toggle both IAM and Wedding Core status
-                                                        await adminApi.deactivateCouple(w.coupleUserId); // This currently only sets to false, I should probably have a toggle in IAM too
+                                                        await adminApi.updateCoupleStatus(w.coupleUserId, newStatus);
                                                         await adminApi.toggleWeddingStatus(w.id, newStatus);
                                                         
                                                         // Refresh list

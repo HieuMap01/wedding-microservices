@@ -9,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import com.wedding.common.dto.PageResponse;
 
-import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -48,12 +47,13 @@ public class AdminController {
         return ResponseEntity.ok(ApiResponse.ok(stats));
     }
 
-    @PutMapping("/users/{id}/deactivate")
-    public ResponseEntity<ApiResponse<Void>> deactivateUser(
+    @PutMapping("/users/{id}/status")
+    public ResponseEntity<ApiResponse<Void>> updateUserStatus(
             @RequestHeader("X-User-Role") String role,
-            @PathVariable Long id) {
+            @PathVariable Long id,
+            @RequestParam boolean isActive) {
         validateAdmin(role);
-        authService.deactivateUser(id);
+        authService.updateUserStatus(id, isActive);
         return ResponseEntity.ok(ApiResponse.ok(null));
     }
 
