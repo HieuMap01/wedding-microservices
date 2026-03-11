@@ -14,5 +14,6 @@ RUN mvn -pl wedding-core-service package -DskipTests -q
 FROM eclipse-temurin:17-jre-alpine
 WORKDIR /app
 COPY --from=build /app/wedding-core-service/target/*.jar app.jar
+RUN mkdir -p /app/uploads/wedding-images
 EXPOSE 8082
 ENTRYPOINT ["java", "-jar", "app.jar"]

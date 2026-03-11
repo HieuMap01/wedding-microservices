@@ -21,6 +21,12 @@ spring:
           predicates:
             - Path=/api/weddings/**
 
+        # Wedding Core Service (Static Uploads)
+        - id: wedding-core-uploads
+          uri: lb://wedding-core-service
+          predicates:
+            - Path=/uploads/**
+
         # Interaction & Analytics Service
         - id: interaction-service
           uri: lb://interaction-service
@@ -34,3 +40,9 @@ eureka:
 
 jwt:
   secret: WeddingSaaSSecretKeyForJWTTokenGeneration2024VeryLongAndSecure
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics

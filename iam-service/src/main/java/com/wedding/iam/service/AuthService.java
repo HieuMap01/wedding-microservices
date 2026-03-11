@@ -1,8 +1,7 @@
 package com.wedding.iam.service;
 
-import com.wedding.common.exception.BadRequestException;
-import com.wedding.common.exception.ResourceNotFoundException;
-import com.wedding.common.exception.UnauthorizedException;
+import com.wedding.common.exception.AppException;
+import com.wedding.common.exception.ErrorCode;
 import com.wedding.common.security.JwtUtil;
 import com.wedding.iam.dto.*;
 import com.wedding.iam.entity.User;
@@ -15,6 +14,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import com.wedding.common.dto.PageResponse;
 
 @Service
 @RequiredArgsConstructor
@@ -23,10 +25,11 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtUtil jwtUtil;
+    private final EmailService emailService;
 
     public AuthResponse register(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new BadRequestException("Email already exists");
+            throw new AppException(ErrorCode.USER_ALREADY_EXISTS);
         }
 
         User user = User.builder()
@@ -44,6 +47,8 @@ public class AuthService {
         String accessToken = jwtUtil.generateAccessToken(user.getId(), user.getEmail(), user.getRole().name());
         String refreshToken = jwtUtil.generateRefreshToken(user.getId());
 
+        emailService.sendWelcomeEmail(user.getEmail(), user.getFullName());
+
         return AuthResponse.builder()
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
@@ -55,14 +60,14 @@ public class AuthService {
 
     public AuthResponse login(LoginRequest request) {
         User user = userRepository.findByEmail(request.getEmail())
-                .orElseThrow(() -> new UnauthorizedException("Invalid email or password"));
+                .orElseThrow(() -> new AppException(ErrorCode.INVALID_CREDENTIALS));
 
         if (!passwordEncoder.matches(request.getPassword(), user.getPasswordHash())) {
-            throw new UnauthorizedException("Invalid email or password");
+            throw new AppException(ErrorCode.INVALID_CREDENTIALS);
         }
 
         if (!user.getIsActive()) {
-            throw new UnauthorizedException("Account is deactivated");
+            throw new AppException(ErrorCode.FORBIDDEN, "Account is deactivated");
         }
 
         String accessToken = jwtUtil.generateAccessToken(user.getId(), user.getEmail(), user.getRole().name());
@@ -79,12 +84,12 @@ public class AuthService {
 
     public AuthResponse refreshToken(String refreshToken) {
         if (!jwtUtil.isTokenValid(refreshToken)) {
-            throw new UnauthorizedException("Invalid or expired refresh token");
+            throw new AppException(ErrorCode.INVALID_TOKEN, "Invalid or expired refresh token");
         }
 
         Long userId = jwtUtil.getUserId(refreshToken);
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
         String newAccessToken = jwtUtil.generateAccessToken(user.getId(), user.getEmail(), user.getRole().name());
         String newRefreshToken = jwtUtil.generateRefreshToken(user.getId());
@@ -100,17 +105,20 @@ public class AuthService {
 
     public UserResponse getCurrentUser(Long userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         return toUserResponse(user);
     }
 
     public UserResponse updateCurrentUser(Long userId, UpdateUserRequest request) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found"));
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
-        if (request.getFullName() != null) user.setFullName(request.getFullName());
-        if (request.getPhone() != null) user.setPhone(request.getPhone());
-        if (request.getAddress() != null) user.setAddress(request.getAddress());
+        if (request.getFullName() != null)
+            user.setFullName(request.getFullName());
+        if (request.getPhone() != null)
+            user.setPhone(request.getPhone());
+        if (request.getAddress() != null)
+            user.setAddress(request.getAddress());
 
         user = userRepository.save(user);
         return toUserResponse(user);
@@ -118,16 +126,24 @@ public class AuthService {
 
     // ---- Admin methods ----
 
-    public List<UserResponse> getAllCouples() {
-        return userRepository.findAll().stream()
-                .filter(u -> u.getRole() == User.Role.COUPLE)
+    public PageResponse<UserResponse> getAllCouples(int page, int size) {
+        Page<User> userPage = userRepository.findByRole(User.Role.COUPLE, PageRequest.of(page, size));
+        List<UserResponse> content = userPage.getContent().stream()
                 .map(this::toUserResponse)
                 .collect(Collectors.toList());
+        return PageResponse.<UserResponse>builder()
+                .content(content)
+                .pageNo(userPage.getNumber())
+                .pageSize(userPage.getSize())
+                .totalElements(userPage.getTotalElements())
+                .totalPages(userPage.getTotalPages())
+                .last(userPage.isLast())
+                .build();
     }
 
     public UserResponse getUserById(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         return toUserResponse(user);
     }
 
@@ -140,7 +156,7 @@ public class AuthService {
 
     public void deactivateUser(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new ResourceNotFoundException("User not found with id: " + id));
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         user.setIsActive(false);
         userRepository.save(user);
     }

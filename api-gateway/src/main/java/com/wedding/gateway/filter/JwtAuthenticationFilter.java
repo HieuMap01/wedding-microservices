@@ -27,8 +27,8 @@ public class JwtAuthenticationFilter implements GlobalFilter, Ordered {
             "/api/iam/auth/refresh",
             "/api/iam/auth/logout",
             "/api/weddings/public/",
-            "/api/interactions/.*/(visit|rsvp)"
-    );
+            "/api/interactions/.*/(visit|rsvp)",
+            "/uploads/");
 
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {

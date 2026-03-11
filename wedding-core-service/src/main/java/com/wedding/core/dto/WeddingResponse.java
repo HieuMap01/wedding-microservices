@@ -31,6 +31,10 @@ public class WeddingResponse {
     private String groomHouseAddress;
     private String brideHouseName;
     private String brideHouseAddress;
+    private BigDecimal groomHouseLat;
+    private BigDecimal groomHouseLng;
+    private BigDecimal brideHouseLat;
+    private BigDecimal brideHouseLng;
     private Boolean isPublished;
     private String publicUrl;
     private List<WeddingImageResponse> images;

@@ -1,8 +1,8 @@
 package com.wedding.interaction.controller;
 
 import com.wedding.common.dto.ApiResponse;
-import com.wedding.common.exception.BadRequestException;
-import com.wedding.common.exception.UnauthorizedException;
+import com.wedding.common.exception.AppException;
+import com.wedding.common.exception.ErrorCode;
 import com.wedding.interaction.dto.*;
 import com.wedding.interaction.service.InteractionService;
 import com.wedding.interaction.service.RateLimitService;
@@ -13,7 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.List;
+import com.wedding.common.dto.PageResponse;
 
 @RestController
 @RequestMapping("/api/interactions")
@@ -47,7 +47,7 @@ public class InteractionController {
 
         // Rate limiting: max 5 RSVPs per IP per wedding per hour
         if (!rateLimitService.isAllowed(weddingId, ipAddress)) {
-            throw new BadRequestException("Too many RSVP submissions. Please try again later.");
+            throw new AppException(ErrorCode.RATE_LIMIT_EXCEEDED, "Too many RSVP submissions. Please try again later.");
         }
 
         RsvpResponse response = interactionService.submitRsvp(weddingId, rsvpRequest, ipAddress);
@@ -66,18 +66,22 @@ public class InteractionController {
     }
 
     @GetMapping("/mine/rsvps")
-    public ResponseEntity<ApiResponse<List<RsvpResponse>>> getMyRsvps(
+    public ResponseEntity<ApiResponse<PageResponse<RsvpResponse>>> getMyRsvps(
             @RequestHeader("X-User-Id") Long userId,
-            @RequestParam Long weddingId) {
-        List<RsvpResponse> response = interactionService.getRsvpsForWedding(weddingId);
+            @RequestParam Long weddingId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "50") int size) {
+        PageResponse<RsvpResponse> response = interactionService.getRsvpsForWedding(weddingId, page, size);
         return ResponseEntity.ok(ApiResponse.ok(response));
     }
 
     @GetMapping("/mine/wishes")
-    public ResponseEntity<ApiResponse<List<WishResponse>>> getMyWishes(
+    public ResponseEntity<ApiResponse<PageResponse<WishResponse>>> getMyWishes(
             @RequestHeader("X-User-Id") Long userId,
-            @RequestParam Long weddingId) {
-        List<WishResponse> response = interactionService.getWishesForWedding(weddingId);
+            @RequestParam Long weddingId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "50") int size) {
+        PageResponse<WishResponse> response = interactionService.getWishesForWedding(weddingId, page, size);
         return ResponseEntity.ok(ApiResponse.ok(response));
     }
 
@@ -93,26 +97,30 @@ public class InteractionController {
     }
 
     @GetMapping("/admin/{weddingId}/rsvps")
-    public ResponseEntity<ApiResponse<List<RsvpResponse>>> getAdminRsvps(
+    public ResponseEntity<ApiResponse<PageResponse<RsvpResponse>>> getAdminRsvps(
             @RequestHeader("X-User-Role") String role,
-            @PathVariable Long weddingId) {
+            @PathVariable Long weddingId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "50") int size) {
         validateAdmin(role);
-        List<RsvpResponse> response = interactionService.getRsvpsForWedding(weddingId);
+        PageResponse<RsvpResponse> response = interactionService.getRsvpsForWedding(weddingId, page, size);
         return ResponseEntity.ok(ApiResponse.ok(response));
     }
 
     @GetMapping("/admin/{weddingId}/wishes")
-    public ResponseEntity<ApiResponse<List<WishResponse>>> getAdminWishes(
+    public ResponseEntity<ApiResponse<PageResponse<WishResponse>>> getAdminWishes(
             @RequestHeader("X-User-Role") String role,
-            @PathVariable Long weddingId) {
+            @PathVariable Long weddingId,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "50") int size) {
         validateAdmin(role);
-        List<WishResponse> response = interactionService.getWishesForWedding(weddingId);
+        PageResponse<WishResponse> response = interactionService.getWishesForWedding(weddingId, page, size);
         return ResponseEntity.ok(ApiResponse.ok(response));
     }
 
     private void validateAdmin(String role) {
         if (!"SUPER_ADMIN".equals(role)) {
-            throw new UnauthorizedException("Access denied. Admin role required.");
+            throw new AppException(ErrorCode.FORBIDDEN, "Access denied. Admin role required.");
         }
     }
 

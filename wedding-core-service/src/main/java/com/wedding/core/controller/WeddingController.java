@@ -78,6 +78,13 @@ public class WeddingController {
         return ResponseEntity.ok(ApiResponse.ok("Image order updated", response));
     }
 
+    @GetMapping("/mine/qr")
+    public ResponseEntity<ApiResponse<String>> getMyQrCode(
+            @RequestHeader("X-User-Id") Long userId) {
+        String qrCodeBase64 = weddingService.generateQrCode(userId);
+        return ResponseEntity.ok(ApiResponse.ok("QR Code generated successfully", qrCodeBase64));
+    }
+
     // ---- Public endpoint ----
 
     @GetMapping("/public/{slug}")
@@ -107,7 +114,8 @@ public class WeddingController {
 
     private void validateAdmin(String role) {
         if (!"SUPER_ADMIN".equals(role)) {
-            throw new com.wedding.common.exception.UnauthorizedException("Access denied. Admin role required.");
+            throw new com.wedding.common.exception.AppException(com.wedding.common.exception.ErrorCode.FORBIDDEN,
+                    "Access denied. Admin role required.");
         }
     }
 }

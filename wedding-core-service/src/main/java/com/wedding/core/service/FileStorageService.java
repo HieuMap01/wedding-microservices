@@ -1,6 +1,7 @@
 package com.wedding.core.service;
 
-import com.wedding.common.exception.BadRequestException;
+import com.wedding.common.exception.AppException;
+import com.wedding.common.exception.ErrorCode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,7 +36,7 @@ public class FileStorageService {
 
             return "/uploads/wedding-images/" + newFilename;
         } catch (IOException e) {
-            throw new BadRequestException("Could not store file: " + e.getMessage());
+            throw new AppException(ErrorCode.BAD_REQUEST, "Could not store file: " + e.getMessage());
         }
     }
 

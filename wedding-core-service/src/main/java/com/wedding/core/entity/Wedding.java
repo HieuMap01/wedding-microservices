@@ -70,6 +70,18 @@ public class Wedding {
     @Column(name = "bride_house_address")
     private String brideHouseAddress;
 
+    @Column(name = "groom_house_lat", precision = 10, scale = 7)
+    private BigDecimal groomHouseLat;
+
+    @Column(name = "groom_house_lng", precision = 10, scale = 7)
+    private BigDecimal groomHouseLng;
+
+    @Column(name = "bride_house_lat", precision = 10, scale = 7)
+    private BigDecimal brideHouseLat;
+
+    @Column(name = "bride_house_lng", precision = 10, scale = 7)
+    private BigDecimal brideHouseLng;
+
     @Column(name = "is_published")
     @Builder.Default
     private Boolean isPublished = false;

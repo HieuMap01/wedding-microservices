@@ -7,7 +7,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/iam_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=Asia/Ho_Chi_Minh&allowPublicKeyRetrieval=true
     username: root
-    password: 12092003
+    password: ${SPRING_DATASOURCE_PASSWORD:12092003}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
@@ -28,6 +28,29 @@ spring.data.redis:
   port: 6379
 
 jwt:
-  secret: WeddingSaaSSecretKeyForJWTTokenGeneration2024VeryLongAndSecure
+  secret: ${JWT_SECRET:WeddingSaaSSecretKeyForJWTTokenGeneration2024VeryLongAndSecure}
   access-token-expiration: 86400000
   refresh-token-expiration: 604800000
+
+spring.mail:
+  host: smtp.gmail.com
+  port: 587
+  username: ${SPRING_MAIL_USERNAME:your-email@gmail.com}
+  password: ${SPRING_MAIL_PASSWORD:your-app-password}
+  default-encoding: UTF-8
+  properties:
+    mail:
+      smtp:
+        auth: true
+        starttls:
+          enable: true
+
+app:
+  mail:
+    admin: ${APP_MAIL_ADMIN:admin@example.com}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics

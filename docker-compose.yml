@@ -4,7 +4,7 @@ services:
     image: mysql:8.0
     container_name: wedding-mysql
     environment:
-      MYSQL_ROOT_PASSWORD: 12092003
+      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
     ports:
       - "3307:3306"
     volumes:
@@ -13,7 +13,7 @@ services:
     networks:
       - wedding-network
     healthcheck:
-      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-p12092003" ]
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-p${MYSQL_ROOT_PASSWORD}" ]
       interval: 10s
       timeout: 5s
       retries: 10
@@ -77,10 +77,16 @@ services:
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/iam_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=Asia/Ho_Chi_Minh&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: 12092003
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       SPRING_DATA_REDIS_HOST: redis
       SPRING_DATA_REDIS_PORT: 6379
       EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      JWT_SECRET: ${JWT_SECRET}
+      ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@wedding.com}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
+      SPRING_MAIL_USERNAME: ${MAIL_USERNAME:-your-email@gmail.com}
+      SPRING_MAIL_PASSWORD: ${MAIL_PASSWORD:-your-app-password}
+      APP_MAIL_ADMIN: ${APP_MAIL_ADMIN:-admin@example.com}
     depends_on:
       mysql:
         condition: service_healthy
@@ -102,7 +108,7 @@ services:
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/wedding_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=Asia/Ho_Chi_Minh&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: 12092003
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       SPRING_DATA_REDIS_HOST: redis
       SPRING_DATA_REDIS_PORT: 6379
       EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://eureka-server:8761/eureka/
@@ -129,10 +135,13 @@ services:
     environment:
       SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/interaction_db?createDatabaseIfNotExist=true&useSSL=false&serverTimezone=Asia/Ho_Chi_Minh&allowPublicKeyRetrieval=true
       SPRING_DATASOURCE_USERNAME: root
-      SPRING_DATASOURCE_PASSWORD: 12092003
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_ROOT_PASSWORD}
       SPRING_DATA_REDIS_HOST: redis
       SPRING_DATA_REDIS_PORT: 6379
       EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://eureka-server:8761/eureka/
+      SPRING_MAIL_USERNAME: ${MAIL_USERNAME:-your-email@gmail.com}
+      SPRING_MAIL_PASSWORD: ${MAIL_PASSWORD:-your-app-password}
+      APP_MAIL_ADMIN: ${APP_MAIL_ADMIN:-admin@example.com}
     depends_on:
       mysql:
         condition: service_healthy

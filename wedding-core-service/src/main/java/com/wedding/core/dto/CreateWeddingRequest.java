@@ -26,5 +26,9 @@ public class CreateWeddingRequest {
     private String groomHouseAddress;
     private String brideHouseName;
     private String brideHouseAddress;
+    private BigDecimal groomHouseLat;
+    private BigDecimal groomHouseLng;
+    private BigDecimal brideHouseLat;
+    private BigDecimal brideHouseLng;
     private String slug; // optional, auto-generated if empty
 }

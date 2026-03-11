@@ -7,6 +7,7 @@ import com.wedding.iam.service.AuthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.wedding.common.dto.PageResponse;
 
 import java.util.List;
 import java.util.Map;
@@ -19,18 +20,22 @@ public class AdminController {
     private final AuthService authService;
 
     @GetMapping("/users")
-    public ResponseEntity<ApiResponse<List<UserResponse>>> getAllCouples(
-            @RequestHeader("X-User-Role") String role) {
+    public ResponseEntity<ApiResponse<PageResponse<UserResponse>>> getAllCouples(
+            @RequestHeader("X-User-Role") String role,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size) {
         validateAdmin(role);
-        List<UserResponse> response = authService.getAllCouples();
+        PageResponse<UserResponse> response = authService.getAllCouples(page, size);
         return ResponseEntity.ok(ApiResponse.ok(response));
     }
 
     @GetMapping("/users/{id}")
     public ResponseEntity<ApiResponse<UserResponse>> getUserById(
-            @RequestHeader("X-User-Role") String role,
+            @RequestHeader(value = "X-User-Role", required = false) String role,
             @PathVariable Long id) {
-        validateAdmin(role);
+        if (role != null) {
+            validateAdmin(role);
+        }
         UserResponse response = authService.getUserById(id);
         return ResponseEntity.ok(ApiResponse.ok(response));
     }
