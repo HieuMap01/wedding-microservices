@@ -7,9 +7,6 @@ import com.wedding.core.entity.Wedding;
 import com.wedding.core.entity.WeddingImage;
 import com.wedding.core.repository.WeddingImageRepository;
 import com.wedding.core.repository.WeddingRepository;
-import com.wedding.core.service.FileStorageService;
-import com.wedding.core.service.QrCodeService;
-import com.wedding.core.service.WeddingCacheService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -71,6 +68,11 @@ public class WeddingService {
     public WeddingResponse getMyWedding(Long coupleUserId) {
         Wedding wedding = weddingRepository.findByCoupleUserId(coupleUserId)
                 .orElseThrow(() -> new AppException(ErrorCode.WEDDING_NOT_FOUND));
+
+        if (!wedding.getIsActive()) {
+            throw new AppException(ErrorCode.WEDDING_LOCKED);
+        }
+
         return toWeddingResponse(wedding);
     }
 
@@ -78,6 +80,10 @@ public class WeddingService {
     public WeddingResponse updateMyWedding(Long coupleUserId, UpdateWeddingRequest request) {
         Wedding wedding = weddingRepository.findByCoupleUserId(coupleUserId)
                 .orElseThrow(() -> new AppException(ErrorCode.WEDDING_NOT_FOUND));
+
+        if (!wedding.getIsActive()) {
+            throw new AppException(ErrorCode.WEDDING_LOCKED);
+        }
 
         if (request.getGroomName() != null)
             wedding.setGroomName(request.getGroomName());
@@ -116,6 +122,20 @@ public class WeddingService {
             wedding.setBrideHouseLat(request.getBrideHouseLat());
         if (request.getBrideHouseLng() != null)
             wedding.setBrideHouseLng(request.getBrideHouseLng());
+
+        if (request.getGroomBankName() != null)
+            wedding.setGroomBankName(request.getGroomBankName());
+        if (request.getGroomBankAccountNumber() != null)
+            wedding.setGroomBankAccountNumber(request.getGroomBankAccountNumber());
+        if (request.getGroomBankAccountHolder() != null)
+            wedding.setGroomBankAccountHolder(request.getGroomBankAccountHolder());
+
+        if (request.getBrideBankName() != null)
+            wedding.setBrideBankName(request.getBrideBankName());
+        if (request.getBrideBankAccountNumber() != null)
+            wedding.setBrideBankAccountNumber(request.getBrideBankAccountNumber());
+        if (request.getBrideBankAccountHolder() != null)
+            wedding.setBrideBankAccountHolder(request.getBrideBankAccountHolder());
 
         wedding = weddingRepository.save(wedding);
         // Invalidate cache
@@ -223,6 +243,10 @@ public class WeddingService {
         Wedding wedding = weddingRepository.findBySlug(slug)
                 .orElseThrow(() -> new AppException(ErrorCode.WEDDING_NOT_FOUND));
 
+        if (!wedding.getIsActive()) {
+            throw new AppException(ErrorCode.WEDDING_LOCKED);
+        }
+
         if (!wedding.getIsPublished()) {
             throw new AppException(ErrorCode.WEDDING_NOT_PUBLISHED);
         }
@@ -306,6 +330,13 @@ public class WeddingService {
                 .brideHouseLat(wedding.getBrideHouseLat())
                 .brideHouseLng(wedding.getBrideHouseLng())
                 .isPublished(wedding.getIsPublished())
+                .groomBankName(wedding.getGroomBankName())
+                .groomBankAccountNumber(wedding.getGroomBankAccountNumber())
+                .groomBankAccountHolder(wedding.getGroomBankAccountHolder())
+                .brideBankName(wedding.getBrideBankName())
+                .brideBankAccountNumber(wedding.getBrideBankAccountNumber())
+                .brideBankAccountHolder(wedding.getBrideBankAccountHolder())
+                .isActive(wedding.getIsActive())
                 .publicUrl(wedding.getIsPublished() ? "/wedding/" + wedding.getSlug() : null)
                 .images(imageResponses)
                 .createdAt(wedding.getCreatedAt())
@@ -321,5 +352,15 @@ public class WeddingService {
                 .displayOrder(image.getDisplayOrder())
                 .createdAt(image.getCreatedAt())
                 .build();
+    }
+
+    @Transactional
+    public WeddingResponse toggleWeddingStatus(Long weddingId, boolean isActive) {
+        Wedding wedding = weddingRepository.findById(weddingId)
+                .orElseThrow(() -> new AppException(ErrorCode.WEDDING_NOT_FOUND));
+        wedding.setIsActive(isActive);
+        wedding = weddingRepository.save(wedding);
+        weddingCacheService.evictCache(wedding.getSlug());
+        return toWeddingResponse(wedding);
     }
 }

@@ -32,6 +32,12 @@ export default function EditWeddingPage() {
         brideHouseLat: '',
         brideHouseLng: '',
         slug: '',
+        groomBankName: '',
+        groomBankAccountNumber: '',
+        groomBankAccountHolder: '',
+        brideBankName: '',
+        brideBankAccountNumber: '',
+        brideBankAccountHolder: '',
     });
 
     useEffect(() => {
@@ -62,6 +68,12 @@ export default function EditWeddingPage() {
                 brideHouseLat: res.data.brideHouseLat?.toString() || '',
                 brideHouseLng: res.data.brideHouseLng?.toString() || '',
                 slug: res.data.slug || '',
+                groomBankName: res.data.groomBankName || '',
+                groomBankAccountNumber: res.data.groomBankAccountNumber || '',
+                groomBankAccountHolder: res.data.groomBankAccountHolder || '',
+                brideBankName: res.data.brideBankName || '',
+                brideBankAccountNumber: res.data.brideBankAccountNumber || '',
+                brideBankAccountHolder: res.data.brideBankAccountHolder || '',
             });
             if (res.data.groomHouseAddress || res.data.brideHouseAddress) {
                 setVenueType('separate');
@@ -339,6 +351,58 @@ export default function EditWeddingPage() {
                                         </div>
                                     </>
                                 )}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {/* Bank Account Info */}
+                <div className="card p-6 md:p-8">
+                    <h3 className="text-xl font-bold text-slate-900 mb-6 flex items-center gap-2">
+                        <span>💳</span> Thông tin nhận quà (Mừng cưới)
+                    </h3>
+                    <p className="text-sm text-slate-500 mb-8">Nhập thông tin ngân hàng để hệ thống tự động tạo mã VietQR giúp khách mời gửi quà mừng dễ dàng hơn.</p>
+                    
+                    <div className="space-y-10">
+                        {/* Groom Bank */}
+                        <div className="p-5 rounded-2xl border border-blue-100 bg-blue-50/30">
+                            <h4 className="font-bold text-blue-800 mb-4 flex items-center gap-2">
+                                <span>🤵</span> Tài khoản Nhà Trai
+                            </h4>
+                            <div className="grid md:grid-cols-3 gap-6">
+                                <div>
+                                    <label className="block text-xs font-semibold text-slate-700 mb-2 uppercase tracking-wider">Tên ngân hàng</label>
+                                    <input className="input-field py-2.5" value={form.groomBankName} onChange={(e) => update('groomBankName', e.target.value)} placeholder="VD: Vietcombank, MB..." />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-semibold text-slate-700 mb-2 uppercase tracking-wider">Số tài khoản</label>
+                                    <input className="input-field py-2.5" value={form.groomBankAccountNumber} onChange={(e) => update('groomBankAccountNumber', e.target.value)} placeholder="Số tài khoản..." />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-semibold text-slate-700 mb-2 uppercase tracking-wider">Chủ tài khoản</label>
+                                    <input className="input-field py-2.5" value={form.groomBankAccountHolder} onChange={(e) => update('groomBankAccountHolder', e.target.value)} placeholder="NGUYEN VAN A" />
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Bride Bank */}
+                        <div className="p-5 rounded-2xl border border-rose-100 bg-rose-50/30">
+                            <h4 className="font-bold text-rose-800 mb-4 flex items-center gap-2">
+                                <span>👰</span> Tài khoản Nhà Gái
+                            </h4>
+                            <div className="grid md:grid-cols-3 gap-6">
+                                <div>
+                                    <label className="block text-xs font-semibold text-slate-700 mb-2 uppercase tracking-wider">Tên ngân hàng</label>
+                                    <input className="input-field py-2.5" value={form.brideBankName} onChange={(e) => update('brideBankName', e.target.value)} placeholder="VD: Vietcombank, MB..." />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-semibold text-slate-700 mb-2 uppercase tracking-wider">Số tài khoản</label>
+                                    <input className="input-field py-2.5" value={form.brideBankAccountNumber} onChange={(e) => update('brideBankAccountNumber', e.target.value)} placeholder="Số tài khoản..." />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-semibold text-slate-700 mb-2 uppercase tracking-wider">Chủ tài khoản</label>
+                                    <input className="input-field py-2.5" value={form.brideBankAccountHolder} onChange={(e) => update('brideBankAccountHolder', e.target.value)} placeholder="NGUYEN THI B" />
+                                </div>
                             </div>
                         </div>
                     </div>

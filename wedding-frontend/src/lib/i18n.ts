@@ -28,7 +28,14 @@ export const translations = {
         sending: "⏳ Đang gửi...",
         sendButton: "💌 Gửi xác nhận",
         poweredBy: "Powered by WeddingApp 💍",
-        successRsvp: "🎉 Cảm ơn bạn đã phản hồi!"
+        successRsvp: "🎉 Cảm ơn bạn đã phản hồi!",
+        giftTitle: "Mừng cưới (Wedding Gift)",
+        giftDesc: "Nếu bạn muốn gửi quà mừng cưới tới chúng mình, bạn có thể chuyển khoản qua thông tin dưới đây.",
+        giftBank: "Ngân hàng",
+        giftAccount: "Số tài khoản",
+        giftHolder: "Chủ tài khoản",
+        groomBankTitle: "🏦 Tài khoản Nhà Trai",
+        brideBankTitle: "🏦 Tài khoản Nhà Gái"
     },
     en: {
         loading: "💍 Loading invitation...",
@@ -57,7 +64,14 @@ export const translations = {
         sending: "⏳ Sending...",
         sendButton: "💌 Send RSVP",
         poweredBy: "Powered by WeddingApp 💍",
-        successRsvp: "🎉 Thank you for your RSVP!"
+        successRsvp: "🎉 Thank you for your RSVP!",
+        giftTitle: "Wedding Gift",
+        giftDesc: "If you would like to send a wedding gift, you can use the bank information below.",
+        giftBank: "Bank",
+        giftAccount: "Account Number",
+        giftHolder: "Account Holder",
+        groomBankTitle: "🏦 Groom's Family Bank",
+        brideBankTitle: "🏦 Bride's Family Bank"
     }
 };
 

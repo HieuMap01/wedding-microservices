@@ -23,6 +23,7 @@ public enum ErrorCode {
     WEDDING_ALREADY_EXISTS("WED_002", "Wedding already exists for this couple"),
     WEDDING_NOT_PUBLISHED("WED_003", "This wedding is not yet published"),
     INVALID_WEDDING_SLUG("WED_004", "Wedding slug is invalid or already taken"),
+    WEDDING_LOCKED("WED_005", "This wedding account has been locked by administrator"),
 
     // Interaction Errors (Prefix: INT_)
     RATE_LIMIT_EXCEEDED("INT_001", "Too many requests. Please try again later");

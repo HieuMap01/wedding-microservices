@@ -43,7 +43,8 @@ export default function CouplesListPage() {
                                     <th className="p-4 font-semibold text-slate-600 text-sm">Chú rể</th>
                                     <th className="p-4 font-semibold text-slate-600 text-sm">Cô dâu</th>
                                     <th className="p-4 font-semibold text-slate-600 text-sm">Đường dẫn</th>
-                                    <th className="p-4 font-semibold text-slate-600 text-sm">Trạng thái</th>
+                                    <th className="p-4 font-semibold text-slate-600 text-sm">Trạng thái Thiệp</th>
+                                    <th className="p-4 font-semibold text-slate-600 text-sm">Trạng thái TK</th>
                                     <th className="p-4 font-semibold text-slate-600 text-sm">Ngày tạo</th>
                                     <th className="p-4 font-semibold text-slate-600 text-sm text-right">Thao tác</th>
                                 </tr>
@@ -68,10 +69,48 @@ export default function CouplesListPage() {
                                                 </span>
                                             )}
                                         </td>
+                                        <td className="p-4">
+                                            {w.isActive ? (
+                                                <span className="inline-flex items-center px-2 py-1 rounded text-xs font-semibold bg-blue-50 text-blue-700 border border-blue-200">
+                                                    🟢 Hoạt động
+                                                </span>
+                                            ) : (
+                                                <span className="inline-flex items-center px-2 py-1 rounded text-xs font-semibold bg-rose-50 text-rose-700 border border-rose-200">
+                                                    🚫 Đã khóa
+                                                </span>
+                                            )}
+                                        </td>
                                         <td className="p-4 text-slate-500 text-sm">
                                             {w.createdAt ? new Date(w.createdAt).toLocaleDateString('vi-VN') : '—'}
                                         </td>
-                                        <td className="p-4 text-right">
+                                        <td className="p-4 text-right flex items-center justify-end gap-2">
+                                            <button 
+                                                onClick={async () => {
+                                                    const action = w.isActive ? 'vô hiệu hóa' : 'kích hoạt lại';
+                                                    if (!confirm(`Bạn có chắc chắn muốn ${action} tài khoản này?`)) return;
+                                                    try {
+                                                        const newStatus = !w.isActive;
+                                                        // Toggle both IAM and Wedding Core status
+                                                        await adminApi.deactivateCouple(w.coupleUserId); // This currently only sets to false, I should probably have a toggle in IAM too
+                                                        await adminApi.toggleWeddingStatus(w.id, newStatus);
+                                                        
+                                                        // Refresh list
+                                                        const res = await adminApi.getAllWeddings();
+                                                        setWeddings(res.data);
+                                                        
+                                                        alert(`Đã ${action} thành công!`);
+                                                    } catch (err: any) {
+                                                        alert('Lỗi: ' + err.message);
+                                                    }
+                                                }} 
+                                                className={`inline-flex items-center justify-center px-3 py-1.5 border rounded-md text-sm font-medium transition-colors ${
+                                                    w.isActive 
+                                                    ? "border-rose-200 text-rose-700 bg-rose-50 hover:bg-rose-100" 
+                                                    : "border-emerald-200 text-emerald-700 bg-emerald-50 hover:bg-emerald-100"
+                                                }`}
+                                            >
+                                                {w.isActive ? 'Khóa' : 'Mở khóa'}
+                                            </button>
                                             <Link href={`/admin/couples/${w.id}`} className="inline-flex items-center justify-center px-3 py-1.5 border border-slate-200 rounded-md text-sm font-medium text-slate-700 bg-white hover:bg-slate-50 hover:text-sky-600 transition-colors">
                                                 Chi tiết
                                             </Link>

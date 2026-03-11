@@ -86,6 +86,28 @@ public class Wedding {
     @Builder.Default
     private Boolean isPublished = false;
 
+    @Column(name = "groom_bank_name")
+    private String groomBankName;
+
+    @Column(name = "groom_bank_account_number")
+    private String groomBankAccountNumber;
+
+    @Column(name = "groom_bank_account_holder")
+    private String groomBankAccountHolder;
+
+    @Column(name = "bride_bank_name")
+    private String brideBankName;
+
+    @Column(name = "bride_bank_account_number")
+    private String brideBankAccountNumber;
+
+    @Column(name = "bride_bank_account_holder")
+    private String brideBankAccountHolder;
+
+    @Builder.Default
+    @Column(name = "is_active")
+    private Boolean isActive = true;
+
     @OneToMany(mappedBy = "wedding", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("displayOrder ASC")
     @Builder.Default

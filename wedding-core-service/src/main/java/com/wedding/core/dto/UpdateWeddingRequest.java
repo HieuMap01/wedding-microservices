@@ -25,4 +25,12 @@ public class UpdateWeddingRequest {
     private BigDecimal groomHouseLng;
     private BigDecimal brideHouseLat;
     private BigDecimal brideHouseLng;
+
+    private String groomBankName;
+    private String groomBankAccountNumber;
+    private String groomBankAccountHolder;
+    
+    private String brideBankName;
+    private String brideBankAccountNumber;
+    private String brideBankAccountHolder;
 }

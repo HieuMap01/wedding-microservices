@@ -112,6 +112,16 @@ public class WeddingController {
         return ResponseEntity.ok(ApiResponse.ok(response));
     }
 
+    @PutMapping("/admin/{weddingId}/status")
+    public ResponseEntity<ApiResponse<WeddingResponse>> toggleWeddingStatus(
+            @RequestHeader("X-User-Role") String role,
+            @PathVariable Long weddingId,
+            @RequestParam boolean isActive) {
+        validateAdmin(role);
+        WeddingResponse response = weddingService.toggleWeddingStatus(weddingId, isActive);
+        return ResponseEntity.ok(ApiResponse.ok("Wedding status updated", response));
+    }
+
     private void validateAdmin(String role) {
         if (!"SUPER_ADMIN".equals(role)) {
             throw new com.wedding.common.exception.AppException(com.wedding.common.exception.ErrorCode.FORBIDDEN,

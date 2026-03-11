@@ -36,6 +36,13 @@ public class WeddingResponse {
     private BigDecimal brideHouseLat;
     private BigDecimal brideHouseLng;
     private Boolean isPublished;
+    private String groomBankName;
+    private String groomBankAccountNumber;
+    private String groomBankAccountHolder;
+    private String brideBankName;
+    private String brideBankAccountNumber;
+    private String brideBankAccountHolder;
+    private Boolean isActive;
     private String publicUrl;
     private List<WeddingImageResponse> images;
     private LocalDateTime createdAt;

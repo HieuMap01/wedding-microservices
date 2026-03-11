@@ -411,6 +411,98 @@ export default function GuestWeddingPage() {
                 </div>
             </motion.section>
 
+            {/* Wedding Gift Section */}
+            {(wedding.groomBankAccountNumber || wedding.brideBankAccountNumber) && (
+                <motion.section
+                    className="py-24 px-6"
+                    style={{ background: '#faf8f5' }}
+                    initial={{ opacity: 0, y: 40 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, margin: "-50px" }}
+                    transition={{ duration: 0.8 }}
+                >
+                    <div className="max-w-5xl mx-auto text-center">
+                        <p className="text-sm uppercase tracking-[0.2em] mb-4" style={{ color: primaryColor }}>Gift</p>
+                        <h2 className="text-4xl font-bold mb-4" style={{ fontFamily: 'var(--font-display)', color: '#2d2d2d' }}>
+                            {t.giftTitle}
+                        </h2>
+                        <p className="text-gray-500 mb-16 text-base max-w-xl mx-auto">{t.giftDesc}</p>
+
+                        <div className="grid md:grid-cols-2 gap-10">
+                            {/* Groom Bank */}
+                            {wedding.groomBankAccountNumber && (
+                                <div className="bg-white p-8 rounded-3xl shadow-xl border border-gray-100 flex flex-col items-center">
+                                    <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                                        {t.groomBankTitle}
+                                    </h3>
+                                    <div className="bg-slate-50 p-4 rounded-2xl border-2 border-dashed border-slate-200 mb-8 w-full max-w-[240px]">
+                                        <img 
+                                            src={`https://img.vietqr.io/image/${wedding.groomBankName?.split(' ')[0]}-${wedding.groomBankAccountNumber}-compact.jpg?accountName=${encodeURIComponent(wedding.groomBankAccountHolder || '')}`}
+                                            alt="Groom VietQR"
+                                            className="w-full aspect-square object-contain rounded-lg shadow-sm"
+                                        />
+                                    </div>
+                                    <div className="w-full text-left space-y-4">
+                                        <div className="flex justify-between items-center border-b border-slate-50 pb-2">
+                                            <span className="text-xs font-bold text-slate-400 uppercase">{t.giftBank}</span>
+                                            <span className="font-bold text-slate-700">{wedding.groomBankName}</span>
+                                        </div>
+                                        <div className="flex justify-between items-center border-b border-slate-50 pb-2">
+                                            <span className="text-xs font-bold text-slate-400 uppercase">{t.giftAccount}</span>
+                                            <div className="flex items-center gap-2">
+                                                <span className="font-mono font-bold text-lg" style={{ color: primaryColor }}>{wedding.groomBankAccountNumber}</span>
+                                                <button onClick={() => { navigator.clipboard.writeText(wedding.groomBankAccountNumber || ''); alert('Copied!'); }} className="p-1 hover:text-sky-600 transition-colors">
+                                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div className="flex justify-between items-center pb-2">
+                                            <span className="text-xs font-bold text-slate-400 uppercase">{t.giftHolder}</span>
+                                            <span className="font-bold text-slate-700 uppercase">{wedding.groomBankAccountHolder}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Bride Bank */}
+                            {wedding.brideBankAccountNumber && (
+                                <div className="bg-white p-8 rounded-3xl shadow-xl border border-gray-100 flex flex-col items-center">
+                                    <h3 className="text-xl font-bold text-gray-800 mb-6 flex items-center gap-2">
+                                        {t.brideBankTitle}
+                                    </h3>
+                                    <div className="bg-slate-50 p-4 rounded-2xl border-2 border-dashed border-slate-200 mb-8 w-full max-w-[240px]">
+                                        <img 
+                                            src={`https://img.vietqr.io/image/${wedding.brideBankName?.split(' ')[0]}-${wedding.brideBankAccountNumber}-compact.jpg?accountName=${encodeURIComponent(wedding.brideBankAccountHolder || '')}`}
+                                            alt="Bride VietQR"
+                                            className="w-full aspect-square object-contain rounded-lg shadow-sm"
+                                        />
+                                    </div>
+                                    <div className="w-full text-left space-y-4">
+                                        <div className="flex justify-between items-center border-b border-slate-50 pb-2">
+                                            <span className="text-xs font-bold text-slate-400 uppercase">{t.giftBank}</span>
+                                            <span className="font-bold text-slate-700">{wedding.brideBankName}</span>
+                                        </div>
+                                        <div className="flex justify-between items-center border-b border-slate-50 pb-2">
+                                            <span className="text-xs font-bold text-slate-400 uppercase">{t.giftAccount}</span>
+                                            <div className="flex items-center gap-2">
+                                                <span className="font-mono font-bold text-lg" style={{ color: primaryColor }}>{wedding.brideBankAccountNumber}</span>
+                                                <button onClick={() => { navigator.clipboard.writeText(wedding.brideBankAccountNumber || ''); alert('Copied!'); }} className="p-1 hover:text-sky-600 transition-colors">
+                                                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3" /></svg>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div className="flex justify-between items-center pb-2">
+                                            <span className="text-xs font-bold text-slate-400 uppercase">{t.giftHolder}</span>
+                                            <span className="font-bold text-slate-700 uppercase">{wedding.brideBankAccountHolder}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </motion.section>
+            )}
+
             {/* Footer */}
             <footer className="py-8 text-center text-sm" style={{ background: '#f5f0eb', color: '#999' }}>
                 <p style={{ fontFamily: 'var(--font-display)' }}>

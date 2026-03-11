@@ -1,100 +1,106 @@
 # 💍 Wedding SaaS Platform - Microservices Architecture
 
-Welcome to the **Wedding SaaS Platform**, a modern, highly scalable microservices-based application designed to help couples create, manage, and share their digital wedding invitations effortlessly.
+Chào mừng bạn đến với **Wedding SaaS Platform**, một hệ thống tạo thiệp báo hỷ kỹ thuật số chuyên nghiệp, được xây dựng trên kiến trúc Microservices hiện đại, có tính mở rộng cao và trải nghiệm người dùng mượt mà.
 
-![Wedding SaaS Preview](https://img.shields.io/badge/Status-Active-brightgreen) ![Spring Boot Version](https://img.shields.io/badge/Spring%20Boot-3.2.5-brightgreen.svg) ![Next.js](https://img.shields.io/badge/Next.js-14-black) ![MySQL](https://img.shields.io/badge/MySQL-8.0-blue) ![Redis](https://img.shields.io/badge/Redis-7-red)
+![Wedding SaaS Preview](https://img.shields.io/badge/Status-Active-brightgreen) ![Spring Boot Version](https://img.shields.io/badge/Spring%20Boot-3.2.5-brightgreen.svg) ![Next.js](https://img.shields.io/badge/Next.js-14-black) ![Docker](https://img.shields.io/badge/Docker-Ready-blue)
 
-## 🌟 Có Gì Nổi Bật (Key Features)
+---
 
-Dự án này là một nền tảng SaaS đích thực kết hợp giữa trải nghiệm người dùng hiện đại và một backend mạnh mẽ:
+## 🌟 Tính Năng Nổi Bật (Key Features)
 
-- **🔐 Bảo mật & Quản lý người dùng (IAM):** Đăng nhập/Đăng ký với JWT Token. Stateless authentication phân quyền Admin/Couple chặt chẽ. Hệ thống Blacklist Token khi đăng xuất bằng Redis.
-- **🎨 Trải nghiệm giao diện cao cấp (Next.js & Tailwind CSS):** Giao diện quản lý thân thiện. Trang khách mời báo hỷ (`[slug]`) có hiệu ứng cuộn mượt mà (Framer Motion), giao diện phân bố hiện đại, tạo xương chờ tải (Loading Skeleton).
-- **🌍 Đa Ngôn Ngữ (i18n):** Tích hợp thông minh các biến hiển thị song ngữ (Anh / Việt) cho thiệp báo hỷ.
-- **📍 Trải nghiệm Cặp Đôi (Tùy biến):** Cặp đôi có thể chủ động sửa thông tin cô dâu, chú rể, chọn màu sắc thiệp (Dynamic Theme Colors). Có thể điền địa chỉ riêng biệt Nhà Trai, Nhà Gái hoặc điểm chung, mọi thứ tự map với *Google Maps Platform*. Hình ảnh Gallery trực quan dạng Slider.
-- **📲 Tích hợp QR Code:** Hệ thống quét và tự động sinh mã QR tĩnh bằng *Google ZXing*, cho phép chia sẻ thiệp nhanh chóng qua Zalo / Facebook hay in cứng.
-- **📩 Thông báo Tự động (Spring Mail):** Hệ thống tự động đẩy Email lời chào khi có người dùng đăng ký mới, tự động báo về email Chủ nhân khi khách mời Xác nhận tham dự (RSVP).
-- **📊 Chống Spam & Thống kê Tương tác (Interaction):** Đếm lượt truy cập, nhận Lời chúc. Cơ chế chống quá tải `Rate Limiting` qua Redis tự động chặn IP ném bom RSVP (Max 5/giờ). Đồng thời cấu trúc Phân trang Pagination toàn bộ dữ liệu.
-- **🩺 Monitor (Spring Actuator):** Health check System.
-- **🐳 Hỗ trợ Docker Compose:** Toàn bộ Infrastructure và Code base chạy trong 1 lệnh deploy duy nhất.
+Dự án không chỉ là một trang web hiển thị, mà là một nền tảng SaaS đầy đủ tính năng:
+
+### 1. Quản lý & Bảo mật (IAM)
+- **🔐 Bảo mật đa lớp:** Sử dụng JWT (JSON Web Token) với cơ chế Stateless Authentication.
+- **🛡️ Phân quyền:** Tách biệt quyền hạn giữa **Admin** (Quản trị hệ thống) và **Couple** (Cặp đôi).
+- **🚀 Blacklist Token:** Tích hợp Redis để vô hiệu hóa Token ngay khi người dùng đăng xuất.
+
+### 2. Tùy biến Thiệp Cưới (Wedding Customization)
+- **🎨 Dynamic Theme:** Cặp đôi tự chọn màu sắc chủ đạo, câu chuyện tình yêu (Love Story).
+- **📍 Map thông minh:** Hỗ trợ tọa độ (Lat/Long) riêng biệt cho Nhà Trai và Nhà Gái, tích hợp Google Maps API.
+- **💰 Tách biệt Tài khoản & QR:** Tính năng độc đáo cho phép nhập riêng STK/Ngân hàng cho cả 2 bên gia đình. Tự động sinh mã **VietQR** chuyên nghiệp cho từng bên.
+
+### 3. Trải nghiệm Khách mời (Public Invitation)
+- **📱 Mobile First:** Giao diện tối ưu hoàn hảo cho điện thoại.
+- **✨ Hiệu ứng cao cấp:** Sử dụng Framer Motion cho các hiệu ứng chuyển động mượt mà, Skeleton Loading cho trải nghiệm tải trang không bị khựng.
+- **📩 Tương tác thời gian thực:** Nhận RSVP (Xác nhận tham dự) và Lời chúc trực tiếp.
+
+### 4. Quản trị & Vận hành (Admin & Ops)
+- **🚫 Double Lock System:** Cơ chế khóa tài khoản triệt để. Khi Admin khóa một cặp đôi, hệ thống sẽ:
+    1. Ngăn không cho đăng nhập.
+    2. Vô hiệu hóa ngay lập tức trang công khai của thiệp đó.
+- **📧 Thông báo tự động:** Gửi Email chào mừng khi đăng ký và thông báo RSVP mới cho cặp đôi qua Spring Mail.
+- **👮 Chống Spam:** Tích hợp Redis Rate Limiting ngăn chặn việc ném bom (spam) lời chúc hoặc RSVP.
 
 ---
 
 ## 🏛 Kiến Trúc Hệ Thống (Architecture)
 
-Ứng dụng được thiết kế theo biểu mẫu **Microservices** chạy hệ sinh thái Spring Cloud. Toàn bộ Request đi qua **API Gateway**.
+Hệ thống bao gồm các dịch vụ độc lập giao tiếp qua nội bộ:
 
-| Component / Service | Vai Trò (Description) | Cổng (Port) | Công Nghệ Chính |
-| --- | --- | --- | --- |
-| **Eureka Server** | Registry trung tâm quản lý tên miền nội bộ của các Microservice. | `8761` | Spring Cloud Netflix Eureka |
-| **API Gateway** | Cửa ngõ Routing chặn CORS, cấp quyền JWT Filter. Gọi Request qua các dịch vụ. Dịch file ảnh. | `8080` | Spring Cloud Gateway, WebFlux |
-| **IAM Service** | Authentication (JWT), Quản lý Role (Admin/User), Gửi Email Chào mừng. | `8081` | Spring Data JPA, Spring Security, Mail |
-| **Wedding Core Service** | Lưu trữ hồ sơ cưới (Wedding Data), Upload File ảnh (Gallery), Sinh QR Code. | `8082` | Spring Data JPA, Redis Cache, ZXing |
-| **Interaction Service** | Nhận tương tác (Thăm viếng, RSVP, Gửi Lời chúc). Thống kê dữ liệu, Gửi Email báo RSVP. | `8083` | Spring Data JPA, Redis Rate Limiting, OpenFeign |
-| **Frontend (Next.js)** | Giao diện Web phân tải Admin Dashboard, Couple Dashboard & Trang Thiệp Mời Public. | `3000` | React, Next.js, Framer Motion, Tailwind |
-
----
-
-## 🚀 Đường Dẫn Ra Sao (Routes & API Path)
-
-Dữ liệu di chuyển qua API Gateway (`localhost:8080`). Dưới đây là các Context Path chính yếu:
-
-- **IAM API**: `http://localhost:8080/api/iam/**`
-  - `/auth/login`, `/auth/register`, `/auth/logout`
-  - `/admin/users`, `/admin/stats`
-- **Wedding Core API**: `http://localhost:8080/api/weddings/**`
-  - `/mine` (CRUD Thiệp của mình)
-  - `/mine/qr` (Tạo mã QR thiệp)
-  - `/public/{slug}` (Lấy thông tin thiệp public)
-  - `/uploads/**` (Lấy file ảnh Gallery)
-- **Interaction API**: `http://localhost:8080/api/interactions/**`
-  - `/public/{weddingId}/visit`
-  - `/public/{weddingId}/rsvp`, `/public/{weddingId}/wishes`
-  - `/mine/wishes`, `/mine/rsvp` (Dữ liệu Admin/Couple có phân trang)
-
-*Tất cả giao tiếp nội bộ giữa các dịch vụ (như Interaction báo Gửi Mail gọi sang IAM Service) đi bằng Spring Cloud OpenFeign qua kết nối Eureka nội bộ để tăng cường độ an toàn.*
+| Service | Mô tả | Port |
+| --- | --- | --- |
+| **Eureka Server** | Trung tâm quản lý và định danh các service. | `8761` |
+| **API Gateway** | Cửa ngõ duy nhất xử lý Routing, CORS, và JWT Filter. | `8080` |
+| **IAM Service** | Quản lý User, Auth, và gửi Email. | `8081` |
+| **Wedding Core** | Lưu trữ dữ liệu thiệp, xử lý hình ảnh, tọa độ và QR Code. | `8082` |
+| **Interaction** | Xử lý RSVP, lời chúc, đếm lượt xem và Rate Limiting. | `8083` |
+| **Frontend** | Website Next.js 14 cho cả Admin, Couple và Public. | `3000` |
 
 ---
 
-## 🔧 Cài đặt ra sao (Installation & Run)
+## ⚡ Phát triển & Cài đặt (Installation)
 
-Ứng dụng hoàn toàn tương thích và đóng gói cùng **Docker**.
+### 🐳 Cách 1: Chạy nhanh bằng Docker (Khuyên dùng)
 
-### Yêu Cầu Cấu Hình
-- Java 17, Node.js v18 (Nếu chạy trực tiếp)
-- Docker & Docker Compose (Khuyên dùng)
-- 3 Database MySQL chạy cổng 3306.
-- 1 Redis.
-
-### Hướng dẫn Start nhanh với Docker (Khuyên Dùng)
-
-**Bước 1:** Clone repository
+**Bước 1:** Chuẩn bị file `.env` (Dựa trên `.env.example`).
+**Bước 2:** Chạy lệnh:
 ```bash
-git clone https://github.com/HieuMap01/wedding-microservices.git
-cd wedding-microservices
+docker-compose up -d --build
+```
+*Hệ thống sẽ tự động build và chạy tất cả 5 service, MySQL, và Redis.*
+
+### 🚀 Cách 2: Chế độ phát triển nhanh (Hot-Reload)
+Dành cho lập trình viên muốn sửa code frontend và thấy kết quả ngay lập tức:
+```bash
+docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+```
+*Lưu ý: Chế độ này yêu cầu file `docker-compose.dev.yml` và `Dockerfile.dev` trong thư mục frontend.*
+
+### 🛠 Cách 3: Chạy thủ công (Manual)
+1. **Backend:** Vào từng thư mục service (`iam-service`, `wedding-core-service`, v.v.) chạy `./mvnw spring-boot:run`.
+2. **Frontend:** Vào thư mục `wedding-frontend`, chạy `npm install` và `npm run dev`.
+
+---
+
+## 📁 Cấu trúc thư mục (Project Structure)
+
+```text
+wedding-microservices/
+├── common-lib/           # Thư viện dùng chung (Exception, DTO, Security)
+├── api-gateway/          # Spring Cloud Gateway
+├── eureka-server/        # Service Registry
+├── iam-service/          # Identity & Access Management
+├── wedding-core-service/ # Dịch vụ cốt lõi quản lý thiệp
+├── interaction-service/  # Dịch vụ tương tác khách mời
+└── wedding-frontend/     # Next.js 14 Frontend
 ```
 
-**Bước 2:** Cài đặt Biến Môi trường (Environment Variables)
-Sao chép `.env.example` thành `.env` để đặt các tham số mật nhạy cảm:
+---
 
-```bash
-cp .env.example .env
+## 🛠 Tech Stack sử dụng
 
-# Sửa thông tin tài khoản Email gửi thông báo trong .env
-MAIL_USERNAME=buiminhhieu...
-MAIL_PASSWORD=your_app_password
-APP_MAIL_ADMIN=buiminhhieu...
-```
+- **Backend:** Java 17, Spring Boot 3.2, Spring Cloud (Eureka, Gateway, OpenFeign).
+- **Database:** MySQL 8.0, Redis (Caching & Rate Limiting).
+- **Frontend:** Next.js 14 (App Router), TypeScript, Tailwind CSS, Framer Motion.
+- **DevOps:** Docker, Docker Compose.
+- **Integrations:** VietQR API, Google Maps, Spring Mail.
 
-**Bước 3:** Chạy hệ thống bằng Docker Compose
-Đảm bảo **Docker Desktop / Docker Engine đang chạy**. Gõ lệnh:
+---
 
-```bash
-docker-compose up --build
-```
-*Ghi chú: Khởi động lần đầu sẽ mất khoảng 2 - 5 phút tùy cấu hình mạng vì Docker cần kéo file ảnh (JDK, Node) và Build toàn bộ Source Code của 5 Microservices + Frontend bằng Multi-stage.*
+## 🤝 Liên hệ & Phát triển
 
-**Bước 4:** Tận hưởng thành quả
-- Mở **Front-end**: `http://localhost:3000`
-- API Gateway: `http://localhost:8080`
-- Bảng điều khiển Backend Eureka: `http://localhost:8761`
+Dự án được phát triển bởi **Bùi Minh Hiếu**. Nếu bạn có thắc mắc hoặc muốn đóng góp ý tưởng, vui lòng liên hệ qua email hoặc GitHub cá nhân.
+
+---
+*Chúc các cặp đôi có một ngày cưới thật hạnh phúc với sự hỗ trợ từ nền tảng của chúng tôi! 🥂*

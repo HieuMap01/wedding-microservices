@@ -114,6 +114,7 @@ export const adminApi = {
   getWeddingStats: (weddingId: number) => api.get<StatsResponse>(`/api/interactions/admin/${weddingId}/stats`),
   getWeddingRsvps: (weddingId: number, page: number = 0, size: number = 50) => api.get<PageResponse<RsvpResponse>>(`/api/interactions/admin/${weddingId}/rsvps?page=${page}&size=${size}`),
   getWeddingWishes: (weddingId: number, page: number = 0, size: number = 50) => api.get<PageResponse<WishResponse>>(`/api/interactions/admin/${weddingId}/wishes?page=${page}&size=${size}`),
+  toggleWeddingStatus: (weddingId: number, isActive: boolean) => api.put<WeddingResponse>(`/api/weddings/admin/${weddingId}/status?isActive=${isActive}`),
 };
 
 // ===== Wedding =====
@@ -148,6 +149,13 @@ export interface WeddingResponse {
   brideHouseLat: number;
   brideHouseLng: number;
   isPublished: boolean;
+  isActive: boolean;
+  groomBankName?: string;
+  groomBankAccountNumber?: string;
+  groomBankAccountHolder?: string;
+  brideBankName?: string;
+  brideBankAccountNumber?: string;
+  brideBankAccountHolder?: string;
   publicUrl: string;
   images: WeddingImageResponse[];
   createdAt: string;
