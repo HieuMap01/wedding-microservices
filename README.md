@@ -71,8 +71,6 @@ docker-compose -f docker-compose.yml -f docker-compose.dev.yml up -d
 1. **Backend:** Vào từng thư mục service (`iam-service`, `wedding-core-service`, v.v.) chạy `./mvnw spring-boot:run`.
 2. **Frontend:** Vào thư mục `wedding-frontend`, chạy `npm install` và `npm run dev`.
 
----
-
 ## 📁 Cấu trúc thư mục (Project Structure)
 
 ```text
